@@ -1,15 +1,23 @@
 //Globals
 var parseDBID = -1;
 var omletID;
+var fullName;
 
-$(document).ready(function(){
+Omlet.ready(function() {
     //Initialization call to parse
     Parse.initialize("QkXw7fBPJI2f3DpSlP17JaLwjct7mSlAglW921ZD", "Sgpsbwn4Ad8OGmKbZ1wgfMXo0TEtQlaaCCdmFoWX");
-    //Get Omlet ID (placeholder for now)
-    omletID = 'khan';
-    $("#start_button").click(function () {
-        newParseDatabase();
-    });
+    omletID = Omlet.getIdentity().principal;
+    fullName = Omlet.getIdentity().name;
+    var obj = Omlet.getPasteboard();
+    if (obj) {
+        parseDBID = obj.json.parseDBID;
+        changePage();
+    }
+    else {
+        $("#start_button").click(function() {
+            newParseDatabase();
+        });
+    }
 });
 
 function newParseDatabase() {
@@ -111,5 +119,18 @@ function revertPage() {
 }
 
 function shareLink() {
-    alert('Link is  http://web.stanford.edu/~khan18/Pinpoint/?parseDB='+parseDBID+'&omletID='+omletID);
+    var link = 'http://web.stanford.edu/~khan18/Pinpoint/?parseDB='+parseDBID+'&omletID='+omletID+'&fullName='+fullName;
+    var obj = {"link": link, "parseDBID": parseDBID};
+    
+    var rdl = Omlet.createRDL({
+    	noun: "pinpoint",
+    	displayTitle: "Pinpoint Location Share",
+    	displayThumbnailUrl: "http://web.stanford.edu/~khan18/PinpointOmlet/img/pinpoint-logo.jpg",
+    	displayText: link,
+    	json: obj,
+    	webCallback: link,
+    	callback: window.location.href
+	});
+    
+    Omlet.exit(rdl);
 }

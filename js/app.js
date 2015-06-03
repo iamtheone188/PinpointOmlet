@@ -31,7 +31,7 @@ function populateParseDatabase() {
     var OmletDocument = Parse.Object.extend("OmletDocument");
     var query = new Parse.Query(OmletDocument);
     query.get(parseDBID, {
-        success: function(OmletDocument) {
+        success: function(omletDocument) {
             omletDocument.set("_group_location", {"present": false, "start_time": 0, "share_time": 0, "lat": 0, "lng": 0, "address_string": ""});
             omletDocument.set("_users", []);
             omletDocument.save(null, {

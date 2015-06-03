@@ -32,8 +32,8 @@ function populateParseDatabase() {
     var query = new Parse.Query(OmletDocument);
     query.get(parseDBID, {
         success: function(omletDocument) {
-            omletDocument.set("_group_location", {"present": false, "start_time": 0, "share_time": 0, "lat": 0, "lng": 0, "address_string": ""});
-            omletDocument.set("_users", []);
+            omletDocument.set("group_location_", {"present": false, "start_time": 0, "share_time": 0, "lat": 0, "lng": 0, "address_string": ""});
+            omletDocument.set("users_", []);
             omletDocument.save(null, {
                 success: function(omletDocument) {
                     changePage();
@@ -71,9 +71,18 @@ function deleteParseDatabase() {
 }
 
 function changePage() {
+    //Unbind events
+    $("#start_button").unbind();
+    
     $("#start_button").addClass("disabled");
     $("#stop_button").removeClass("disabled");
     $("#share_button").removeClass("disabled");
+    
+    //Clear texts first
+    $("#omletIDText").html("");
+    $("#parseIDText").html("");
+    $("#URLText").html("");
+    
     $("#omletIDText").append(omletID);
     $("#parseIDText"). append(parseDBID);
     $("#URLText").append('<a href="http://web.stanford.edu/~khan18/Pinpoint/?parseDB='+parseDBID+'&omletID='+omletID+'">http://web.stanford.edu/~khan18/Pinpoint/?parseDB='+parseDBID+'&omletID='+omletID+'</a>')
@@ -92,8 +101,13 @@ function changePage() {
 function revertPage() {
     $("#start_button").removeClass("disabled");
     $("#stop_button").addClass("disabled");
+    $("#stop_button").unbind();
     $("#share_button").addClass("disabled");
+    $("#share_button").unbind();
     $("#info_display").addClass("hidden");
+    $("#start_button").click(function () {
+        newParseDatabase();
+    });
 }
 
 function shareLink() {
